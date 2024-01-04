@@ -16,7 +16,10 @@ const validateLoginParameters = (login, password) => {
 }
 
 const validateUser = async (login, password) => {
-    validateLoginParameters(login, password)
+    try{
+        validateLoginParameters(login, password)
+    }catch(err){
+        return null;}
     // retrieves user identity from database.
     var fetched_user = null;
     db.get("SELECT * from Users WHERE username = $login", {$login: login}, (err, usr) => {
