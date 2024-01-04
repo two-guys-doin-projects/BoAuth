@@ -15,7 +15,7 @@ const validateLoginParameters = (login, password) => {
     }
 }
 
-const validateUser = async (login, password) => {
+const validateUser = (login, password) => {
     try{
         validateLoginParameters(login, password)
     }catch(err){
@@ -33,7 +33,7 @@ const validateUser = async (login, password) => {
     return fetched_user;
 }
 
-const registerUser = async (login, password) => {
+const registerUser = (login, password) => {
     validateLoginParameters(login, password)
     db.run("INSERT INTO Users (username, password) VALUES(?)", [login, password], (err) => {
         if(err){
