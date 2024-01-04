@@ -1,22 +1,24 @@
-const sqlite3 = require('sqlite3');
-const sqlite = require('sqlite')
-
-(async () => {
-    // open the database
-    const db = await open({
-      filename: 'users.db',
-      driver: sqlite3.Database
-    })
-})()
+const {db} = require('./db_init')
 
 const validateUser = async (login, password) => {
     // retrieves user identity from database.
-    const user = await db.get(
-        'SELECT ID, password, name, surname FROM Users WHERE login = ?',
-        login)
-    if(user.password != password){
-        return null
+    var fetched_user = null;
+    db.get("SELECT * from Users WHERE username = $login", {$login: login}, (err, usr) => {
+        fetched_user = usr;
+    })
+    const userNotExists = fetched_user === null
+    const invalidPassword = fetched_user.password != password
+    if(userNotExists || invalidPassword){
+        return null;
     }
-    delete user.password
-    
+    return fetched_user;
+}
+
+// close database connection on application exit
+process.on('exit', () => {
+    db.close();
+})
+
+module.exports = {
+    validateUser
 }
