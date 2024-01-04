@@ -34,6 +34,11 @@ app.get('/', (req, res) => {
     res.send('Welcome')
 })
 
+app.post('/login', passport.authenticate('local', {
+    successRedirect: '/dashboard',
+    failureRedirect: '/login',
+    failureFlash: true
+  }));
 
 // API bootstrap
 app.listen(APPLICATION_PORT, () => {
