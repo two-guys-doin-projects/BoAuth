@@ -43,6 +43,14 @@ const registerUser = async (login, password) => {
     return validateUser(login, password)
 }
 
+const getUserByID = (id) => {
+    var fetched_user = null;
+    db.get("SELECT * from Users WHERE id = $id", {$id: id}, (err, usr) => {
+        fetched_user = usr;
+    })
+    return fetched_user
+}
+
 // close database connection on application exit
 process.on('exit', () => {
     db.close();
@@ -50,5 +58,6 @@ process.on('exit', () => {
 
 module.exports = {
     validateUser,
-    registerUser
+    registerUser,
+    getUserByID
 }
