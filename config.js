@@ -1,4 +1,8 @@
 const APPLICATION_PORT = 3030;
+const USER_IDENTITY_DB_FILE_PATH = 'users.db'
 
 
-module.exports = {APPLICATION_PORT}
+module.exports = {
+    APPLICATION_PORT,
+    USER_IDENTITY_DB_FILE_PATH
+}
