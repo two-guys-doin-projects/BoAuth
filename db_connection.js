@@ -49,5 +49,6 @@ process.on('exit', () => {
 })
 
 module.exports = {
-    validateUser
+    validateUser,
+    registerUser
 }
