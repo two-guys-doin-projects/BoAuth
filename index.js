@@ -19,5 +19,5 @@ app.get('/', (req, res) => {
 
 // API bootstrap
 app.listen(APPLICATION_PORT, () => {
-    console.log(`Server active on port ${config.APPLICATION_PORT}`)
+    console.log(`Server active on port ${APPLICATION_PORT}`)
 })
