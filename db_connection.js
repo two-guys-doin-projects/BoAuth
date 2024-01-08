@@ -16,22 +16,35 @@ const validateLoginParameters = (login, password) => {
 }
 
 const validateUser = (login, password) => {
-    try{
-        validateLoginParameters(login, password)
-    }catch(err){
-        return null;}
-    // retrieves user identity from database.
-    var fetched_user = null;
-    db.get("SELECT * from Users WHERE username = $login", {$login: login}, (err, usr) => {
-        fetched_user = usr;
-    })
-    const userNotExists = fetched_user === null
-    const invalidPassword = fetched_user.password != password
-    if(userNotExists || invalidPassword){
-        return null;
-    }
-    return fetched_user;
-}
+    return new Promise((resolve, reject) => {
+        try {
+            validateLoginParameters(login, password);
+
+            db.get("SELECT * FROM Users WHERE username = $login", { $login: login }, (err, usr) => {
+                if (err) {
+                    reject(new Error("Error fetching user: " + err.message));
+                }
+
+                if (!usr) {
+                    console.log("Fail to fetch user: user does not exist.");
+                    resolve(null);
+                }
+                try {
+                    const invalidPassword = usr.password !== password;
+                    if (invalidPassword) {
+                    console.log("Fail to auth: incorrect password.");
+                    resolve(null);
+                    }
+                }
+                catch(err){
+                }
+                resolve(usr);
+            });
+        } catch (err) {
+            reject(new Error("Error validating user: " + err.message));
+        }
+    });
+};
 
 const registerUser = (login, password) => {
     validateLoginParameters(login, password)
@@ -44,12 +57,16 @@ const registerUser = (login, password) => {
 }
 
 const getUserByID = (id) => {
-    var fetched_user = null;
-    db.get("SELECT * from Users WHERE id = $id", {$id: id}, (err, usr) => {
-        fetched_user = usr;
-    })
-    return fetched_user
-}
+    return new Promise((resolve, reject) => {
+
+        db.get("SELECT * FROM Users WHERE id = $id", { $id: id }, (err, user) => {
+            if (err) {
+                reject(new Error("Error fetching user: " + err.message));
+            }
+            resolve(user);
+        });
+    });
+};
 
 // close database connection on application exit
 process.on('exit', () => {
