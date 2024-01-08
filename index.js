@@ -1,7 +1,7 @@
 const express = require('express');
 const  Session =  require("express-session");
 const  Passport =  require("passport");
-const {LocalStrategy} = require("passport-local");
+const LocalStrategy = require("passport-local");
 const {APPLICATION_PORT, JWT_KEY} =  require('./config');
 const db_ops = require('./db_connection')
 const jwt = require('jsonwebtoken')
