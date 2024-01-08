@@ -1,8 +1,10 @@
 const express = require('express');
 const  Session =  require("express-session");
 const  Passport =  require("passport");
+const {LocalStrategy} = require("passport-local");
 const {APPLICATION_PORT} =  require('./config');
 const db_ops = require('./db_connection')
+//const jwt = require('jsonwebtoken')
 
 // Init step
 const app = express();
@@ -10,16 +12,16 @@ app.use(Session({secret: 'sso_SECRET_key', resave: true, saveUninitialized: true
 app.use(Passport.initialize());
 app.use(Passport.session());
 
-passport.serializeUser((user, done) => {
+Passport.serializeUser((user, done) => {
     done(null, user.id);
   });
 
-passport.deserializeUser((id, done) => {
+Passport.deserializeUser((id, done) => {
     const user = db_ops.getUserByID(id);
     done(null, user);
 });
 
-passport.use(new LocalStrategy(
+Passport.use(new LocalStrategy(
     (username, password, done) => {
       const user = db_ops.validateUser(username, password);
       if (!user) {
