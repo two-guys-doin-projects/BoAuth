@@ -19,18 +19,27 @@ const validateUser = (login, password) => {
     try{
         validateLoginParameters(login, password)
     }catch(err){
-        return null;}
-    // retrieves user identity from database.
-    var fetched_user = null;
-    db.get("SELECT * from Users WHERE username = $login", {$login: login}, (err, usr) => {
-        fetched_user = usr;
-    })
-    const userNotExists = fetched_user === null
-    const invalidPassword = fetched_user.password != password
-    if(userNotExists || invalidPassword){
-        return null;
+        //return null;
+        throw new Error("Error validating user:" + err.message);
     }
-    return fetched_user;
+    // retrieves user identity from database.
+    db.get("SELECT * from Users WHERE username = $login", {$login: login}, async (err, usr) => {
+        if(err){
+            throw new Error("Error fetching user:" + err.message)
+        }
+        console.log(usr);
+        if(!usr){
+            console.log("Fail to fetch user: user does not exist.")
+            return null;
+        }
+        const invalidPassword = usr.password != password
+        if(invalidPassword){
+            console.log("Fail to auth: incorrect password.")
+            return null;
+        }
+        return usr;
+    })
+
 }
 
 const registerUser = (login, password) => {
