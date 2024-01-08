@@ -58,15 +58,12 @@ const registerUser = (login, password) => {
 
 const getUserByID = (id) => {
     return new Promise((resolve, reject) => {
-        let fetched_user = null;
 
-        db.get("SELECT * FROM Users WHERE id = $id", { $id: id }, (err, usr) => {
+        db.get("SELECT * FROM Users WHERE id = $id", { $id: id }, (err, user) => {
             if (err) {
                 reject(new Error("Error fetching user: " + err.message));
             }
-
-            fetched_user = usr;
-            resolve(fetched_user);
+            resolve(user);
         });
     });
 };
