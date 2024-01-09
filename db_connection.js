@@ -1,4 +1,4 @@
-const {db} = require('./db_init');
+import db from './db_init.js'
 
 const validateLoginParameter = (parameter) => {
     //checks if passed login parameter is valid.
@@ -73,8 +73,4 @@ process.on('exit', () => {
     db.close();
 })
 
-module.exports = {
-    validateUser,
-    registerUser,
-    getUserByID
-}
+export default {validateUser, registerUser, getUserByID}

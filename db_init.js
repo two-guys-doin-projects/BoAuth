@@ -1,6 +1,6 @@
-const fs = require('fs');
-const {USER_IDENTITY_DB_FILE_PATH} = require('./config');
-const sqlite3 = require('sqlite3');
+import fs from 'fs'
+import {USER_IDENTITY_DB_FILE_PATH} from './config.js'
+import sqlite3 from 'sqlite3'
 
 const userDBExists = fs.existsSync(USER_IDENTITY_DB_FILE_PATH);
 
@@ -11,4 +11,4 @@ if(!userDBExists){
     
 }
 
-module.exports = {db}
+export default db

@@ -1,6 +1,7 @@
 {
   "name": "boauth",
   "version": "1.0.0",
+  "type": "module",
   "description": "Simple SSO service.",
   "main": "index.js",
   "scripts": {

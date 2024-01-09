@@ -1,10 +1,16 @@
-const express = require('express');
-const  Session =  require("express-session");
-const  Passport =  require("passport");
-const {APPLICATION_PORT, JWT_KEY} =  require('./config');
-const db_ops = require('./db_connection')
-const jwt = require('jsonwebtoken')
-const htmlExpress = require('html-express-js')
+import { dirname} from 'path';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+console.log(__dirname)
+import express from 'express'
+import  Session from "express-session"
+import  Passport from "passport"
+import {APPLICATION_PORT, JWT_KEY} from './config.js'
+import db_ops from './db_connection.js'
+import jwt from 'jsonwebtoken'
+import {Strategy as LocalStrategy} from 'passport-local'
 
 
 
