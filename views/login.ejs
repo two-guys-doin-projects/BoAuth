@@ -1,6 +1,3 @@
-const {html} = require('html-express-js');
-
-const view = (data, state) => html`
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,19 +65,16 @@ const view = (data, state) => html`
         <div class="login-container">
             <div class="form-container">
                 <h1 class="opacity">LOGIN</h1>
-                <form action="" method="post">
-                    <input type="text" placeholder="USERNAME" />
-                    <input type="password" placeholder="PASSWORD" />
-                    <button class="opacity">SUBMIT</button>
-                    <input type="hidden" name="returnTo" value="${data.redirect}">
+                <form action="/auth" method="post">
+                    <input name="username" type="text" placeholder="USERNAME" />
+                    <input name="password" type="text" placeholder="PASSWORD" />
+                    <button type="submit" class="opacity">SUBMIT</button>
+                    <input type="hidden" name="returnTo" value="j00zwik.com">
                 </form>
             </div>
             
         </div>
-        <button type="submit" class="theme-btn-container" />
     </section>
 </body>
 </html>
-`
 
-module.exports = {view}
