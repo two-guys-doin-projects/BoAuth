@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/two-guys-doin-projects/BoAuth#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "html-express-js": "^1.1.1",
