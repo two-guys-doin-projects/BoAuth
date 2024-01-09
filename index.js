@@ -21,7 +21,11 @@ app.set('view engine', 'ejs');
 const filePath = fileURLToPath(import.meta.url);
 const viewsPath = path.join(path.dirname(filePath), 'views');
 app.set('views', viewsPath);
-app.use(cors({credentials: true}))
+app.use(cors({origin: "*", credentials: true}))
+app.use((req, res, next) => {
+  res.setHeader('Content-Security-Policy', 'connect-src *');
+  next();
+});
 app.use(Session({secret: 'sso_SECRET_key', resave: true, saveUninitialized: true}));
 app.use(Passport.initialize());
 app.use(Passport.session());
