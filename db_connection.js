@@ -2,7 +2,7 @@ import db from './db_init.js'
 
 const validateLoginParameter = (parameter) => {
     //checks if passed login parameter is valid.
-    invalidParameterPassed = parameter === null || parameter === '' || parameter.includes(' ');
+    const invalidParameterPassed = parameter === null || parameter === '' || parameter.includes(' ');
     if(invalidParameterPassed){
         return false
     }
