@@ -1,7 +1,7 @@
 import { dirname} from 'path';
 import { fileURLToPath } from 'url';
 import path from 'path';
-
+import cors from 'cors';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 console.log(__dirname)
 import express from 'express'
@@ -21,7 +21,7 @@ app.set('view engine', 'ejs');
 const filePath = fileURLToPath(import.meta.url);
 const viewsPath = path.join(path.dirname(filePath), 'views');
 app.set('views', viewsPath);
-
+app.use(cors({credentials: true}))
 app.use(Session({secret: 'sso_SECRET_key', resave: true, saveUninitialized: true}));
 app.use(Passport.initialize());
 app.use(Passport.session());
