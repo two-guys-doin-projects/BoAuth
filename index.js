@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
     res.send('Welcome')
 })
 
-app.post('/login', (req, res, next) => {
+app.post('/auth', (req, res, next) => {
     passport.authenticate('local', (err, user) => {
       if (err || !user) {
         // Handle authentication failure
