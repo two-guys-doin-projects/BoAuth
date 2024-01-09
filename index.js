@@ -16,31 +16,33 @@ import {Strategy as LocalStrategy} from 'passport-local'
 
 // Init step
 const app = express();
-const __dirname = resolve();
-app.engine(
-  'js',
-  htmlExpress({
-    includesDir: 'includes',
-  })
-);
-app.set('view engine', 'js');
-app.set('views', `${__dirname}/templates`)
+
+app.set('view engine', 'ejs');
+const filePath = fileURLToPath(import.meta.url);
+const viewsPath = path.join(path.dirname(filePath), 'views');
+app.set('views', viewsPath);
+
 app.use(Session({secret: 'sso_SECRET_key', resave: true, saveUninitialized: true}));
 app.use(Passport.initialize());
 app.use(Passport.session());
+app.use(express.urlencoded({ extended: true }));
 
-passport.serializeUser((user, done) => {
+Passport.serializeUser((user, done) => {
     done(null, user.id);
   });
 
-passport.deserializeUser((id, done) => {
-    const user = db_ops.getUserByID(id);
-    done(null, user);
-});
+  Passport.deserializeUser(async (id, done) => {
+    try {
+      const user = await db_ops.getUserByID(id);
+      done(null, user);
+    } catch (err) {
+      done(err);
+    }
+  });
 
-passport.use(new LocalStrategy(
-    (username, password, done) => {
-      const user = db_ops.validateUser(username, password);
+Passport.use(new LocalStrategy(
+    async (username, password, done) => {
+      const user = await db_ops.validateUser(username, password);
       if (!user) {
         return done(null, false, { message: 'Incorrect username or password' });
       }
@@ -53,29 +55,22 @@ app.get('/', (req, res) => {
     res.send('Welcome')
 })
 
-app.post('/auth', (req, res, next) => {
-    passport.authenticate('local', (err, user) => {
-      if (err || !user) {
-        // Handle authentication failure
-        return res.redirect('/login');
-      }
-  
-      // Assuming you have some property like 'returnTo' in the request
-      const redirectTo = req.body.returnTo || '/login';
-  
-      // Issue a JWT or perform any other necessary actions
-      
-      const user_identity = {
-        id: `boauth_${user.id}`,
-        name: user.username
-      }
+app.post('/auth', Passport.authenticate('local', {
+  failureRedirect: '/bruh', // Redirect on authentication failure
+}), (req, res) => {
+  res.set("Content-Security-Policy", "default-src '*'");
+  // If authentication succeeds, you reach this point
+  const user_identity = {
+    id: `boauth_${req.user.id}`,
+    name: req.user.username
+  };
 
-      const user_token = jwt.sign(user_identity, JWT_KEY)
+  const user_token = jwt.sign(user_identity, JWT_KEY);
 
-      // Redirect the user to the specified destination
-      return res.redirect(redirectTo + `?token=${user_token}`);
-    })(req, res, next);
-  });
+  // Redirect the user to the specified destination
+  const redirectTo = req.body.returnTo || '/login';
+  res.redirect(redirectTo + `?token=${user_token}`);
+});
 
 app.get('/login', (req, res, next) => {
   res.render('login', {
