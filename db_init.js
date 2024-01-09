@@ -14,4 +14,6 @@ const localDB = () => {
     return db
 }
 
+const db = localDB()
+
 export default db
