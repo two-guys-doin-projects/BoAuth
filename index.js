@@ -59,21 +59,36 @@ app.get('/', (req, res) => {
     res.send('Welcome')
 })
 
-app.post('/auth', Passport.authenticate('local', {
-  failureRedirect: '/bruh', // Redirect on authentication failure
-}), (req, res) => {
-  res.set("Content-Security-Policy", "default-src '*'");
-  // If authentication succeeds, you reach this point
-  const user_identity = {
-    id: `boauth_${req.user.id}`,
-    name: req.user.username
-  };
+app.post('/auth', (req, res, next) => {
+  Passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
 
-  const user_token = jwt.sign(user_identity, JWT_KEY);
+    if (!user) {
+      // Authentication failed, redirect to /login with the returnTo parameter
+      const redirectTo = req.body.returnTo || '/';
+      return res.redirect(`/login?redirectback=${encodeURIComponent(redirectTo)}`);
+    }
 
-  // Redirect the user to the specified destination
-  const redirectTo = req.body.returnTo || '/login';
-  res.redirect(redirectTo + `?token=${user_token}`);
+    // If authentication succeeds, continue with your logic
+    const user_identity = {
+      id: `boauth_${user.id}`,
+      name: user.username
+    };
+
+    const user_token = jwt.sign(user_identity, JWT_KEY);
+
+    // Get the redirectTo parameter from the POST request
+    const redirectTo = req.body.returnTo || '/login';
+
+    // Construct the URL for the /login endpoint with the returnTo parameter
+    const loginRedirectURL = `/login?returnTo=${encodeURIComponent(redirectTo)}`;
+
+    // Redirect the user to the specified destination
+    res.redirect(redirectTo + `?token=${user_token}`);
+    console.log('response redirected to /login on /auth');
+  })(req, res, next);
 });
 
 app.get('/login', (req, res, next) => {
