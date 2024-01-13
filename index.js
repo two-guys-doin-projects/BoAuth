@@ -77,9 +77,12 @@ app.post('/auth', Passport.authenticate('local', {
 });
 
 app.get('/login', (req, res, next) => {
-  res.render('login', {
-    redirect: req.redirectback
-  })
+  const template_vars = {
+    redirect: req.query.redirectback
+  }
+  res.render('login', template_vars)
+  res.end()
+  console.log('response ended on /login')
 })
 
 // API bootstrap
