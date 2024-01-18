@@ -46,15 +46,20 @@ const validateUser = (login, password) => {
     });
 };
 
-const registerUser = (login, password) => {
-    validateLoginParameters(login, password)
-    db.run("INSERT INTO Users (username, password) VALUES(?)", [login, password], (err) => {
-        if(err){
-            throw new Error(err)
+const registerUser = async (login, password) => {
+    validateLoginParameters(login, password);
+  
+    return new Promise((resolve, reject) => {
+      db.run("INSERT INTO Users (username, password) VALUES(?, ?)", [login, password], (err) => {
+        if (err) {
+          reject(err);  // Reject the promise with the error
+        } else {
+          // Resolve the promise and pass the result of validateUser
+          resolve(validateUser(login, password));
         }
-    })
-    return validateUser(login, password)
-}
+      });
+    });
+  };
 
 const getUserByID = (id) => {
     return new Promise((resolve, reject) => {

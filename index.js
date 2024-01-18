@@ -100,6 +100,34 @@ app.get('/login', (req, res, next) => {
   console.log('response ended on /login')
 })
 
+app.get('/register', (req, res, next) => {
+  res.render('register')
+  res.end()
+  console.log('response ended on /register')
+})
+
+app.get('/register-success', (req, res, next) =>{
+  console.log('rendering success page...')
+  res.render('registerresult')
+  res.end()
+})
+
+app.post('/user-register', async (req, res, next) => {
+  const login = req.body.username
+  const password = req.body.password
+  console.log(`attempting to register ${login} with password ${password}...`)
+  try{
+    console.log('calling db operation...')
+    await db_ops.registerUser(login, password)
+  }
+  catch(error){
+    console.log('cailed; redirecting to register page')
+    res.redirect('/register')
+  }
+  console.log('success? redirecting to final page.')
+  res.redirect('/register-success')
+})
+
 // API bootstrap
 app.listen(APPLICATION_PORT, () => {
     console.log(`Server active on port ${APPLICATION_PORT}`)
